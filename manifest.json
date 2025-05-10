@@ -1,0 +1,69 @@
+{
+  "required_api_version": "^2.0.0",
+  "name": "SSH Multiplexer for Xfce4 Terminal",
+  "description": "Launch SSH sessions in multiple tabs on xfce4-terminal",
+  "developer_name": "d4mur",
+  "icon": "images/icon.svg",
+  "options": 
+  {
+    "query_debounce": 0.05
+  },
+  "preferences": 
+  [
+    {
+	  "id": "mssh_kw",
+	  "type": "keyword",
+	  "name": "SSH Multiplex",
+	  "description": "Launch SSH sessions in multiple tabs.",
+	  "default_value": "mssh"
+	  },    
+    {
+    "id": "terminal_command",
+    "type": "text",
+    "name": "Terminal Command",
+    "default_value": "xfce4-terminal",
+    "description": "The command used to launch the terminal"
+    },
+    {
+      "id": "tab_option",
+      "type": "text",
+      "name": "Tab Option",
+      "default_value": "--tab",
+      "description": "The option used to open a new tab."
+    },
+    {
+      "id": "max_tabs",
+      "type": "text",
+      "name": "Max SSH Tabs",
+      "default_value": "10",
+      "description": "Limits the maximum number of SSH connections (tabs) that can be opened at once."
+    },
+    {
+      "id": "command_option",
+      "type": "text",
+      "name": "Command Option",
+      "default_value": "--command",
+      "description": "The option used to specify the command"
+    },
+    {
+      "id": "ssh_command_template",
+      "type": "text",
+      "name": "SSH Command Template (password)",
+      "default_value": "bash -c 'export SSHPASS={password}; sshpass -e ssh {host}; exec bash'",
+      "description": "Template for the SSH command to be used when entering a password manually."
+    },
+    {
+      "id": "ssh_command_template_no_pw",
+      "type": "text",
+      "name": "SSH Command Template (no password)",
+      "default_value": "bash -c 'ssh {host}; exec bash'",
+      "description": "Template for the SSH command to be used when authentication is done using an identity file."
+    },
+    {
+      "id": "language",
+      "type": "text",
+      "name": "Language",      
+      "description": "The language for the extension. If not specified, the system's default locale will be used. Available languages: de, en, es, fr, it, pt, ru, zh."
+    }
+  ]
+}
