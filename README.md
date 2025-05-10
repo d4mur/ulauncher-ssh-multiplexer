@@ -35,7 +35,7 @@ To install this extension:
 2. Click the gear icon to open **Preferences**.
 3. Go to the **Extensions** tab.
 4. Click **Add Extension**.
-5. Paste [GitHub - d4mur/ulauncher-ssh-multiplexer](https://github.com/d4mur/ulauncher-ssh-multiplexer) and confirm.
+5. Paste https://github.com/d4mur/ulauncher-ssh-multiplexer and confirm.
 
 Ulauncher will download and activate the extension automatically.
 
