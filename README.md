@@ -2,6 +2,8 @@
 
 This Ulauncher extension enhances your SSH workflow with **Xfce4 Terminal**, allowing you to quickly launch one or more SSH sessions in separate tabs. It supports hosts defined in your `~/.ssh/config` or entered manually.
 
+![Screenshot](screenshot.png)
+
 ## Features
 
 - Tailored for **Xfce4 Terminal**.
