@@ -29,81 +29,120 @@ def load_translations(language):
   translations = {
     "en": {
       "loading": "Loading SSH hosts...",
-      "connect_to": "Connect to {host} ({n} tab)",
+      "connect_to": "Connect to {host} ({n} {tab})",
+      "tab": "tab",
+      "tabs": "tabs",
       "missing_deps_label": "Missing one or more dependencies",
-      "missing_deps": "The following dependencies are missing: {missing}"
+      "missing_deps": "The following dependencies are missing: {missing}",
+      "password": "Host password"
     },
     "it": {
       "loading": "Caricamento host SSH...",
-      "connect_to": "Connetti a {host} ({n} tab)",
+      "connect_to": "Connetti a {host} ({n} {tab})",
+      "tab": "scheda",
+      "tabs": "schede",
       "missing_deps_label": "Mancano una o più dipendenze",
-      "missing_deps": "Dipendenze mancanti: {missing}"
+      "missing_deps": "Dipendenze mancanti: {missing}",
+      "password": "Password dell'host"
     },
     "es": {
-        "loading": "Cargando hosts SSH...",
-        "connect_to": "Conectar a {host} ({n} pestaña)",
-        "missing_deps_label": "Falta una o más dependencias",
-        "missing_deps": "Faltan las siguientes dependencias: {missing}"
+      "loading": "Cargando hosts SSH...",
+      "connect_to": "Conectar a {host} ({n} {tab})",
+      "tab": "pestaña",
+      "tabs": "pestañas",
+      "missing_deps_label": "Falta una o más dependencias",
+      "missing_deps": "Faltan las siguientes dependencias: {missing}",
+      "password": "Contraseña del host"
     },
     "fr": {
-        "loading": "Chargement des hôtes SSH...",
-        "connect_to": "Se connecter à {host} ({n} onglet)",
-        "missing_deps_label": "Une ou plusieurs dépendances manquantes",
-        "missing_deps": "Les dépendances suivantes sont manquantes : {missing}"
+      "loading": "Chargement des hôtes SSH...",
+      "connect_to": "Se connecter à {host} ({n} {tab})",
+      "tab": "onglet",
+      "tabs": "onglets",
+      "missing_deps_label": "Une ou plusieurs dépendances manquantes",
+      "missing_deps": "Les dépendances suivantes sont manquantes : {missing}",
+      "password": "Mot de passe de l'hôte"
     },
     "de": {
-        "loading": "Lade SSH-Hosts...",
-        "connect_to": "Verbinden mit {host} ({n} Tab)",
-        "missing_deps_label": "Eine oder mehrere Abhängigkeiten fehlen",
-        "missing_deps": "Folgende Abhängigkeiten fehlen: {missing}"
+      "loading": "Lade SSH-Hosts...",
+      "connect_to": "Verbinden mit {host} ({n} {tab})",
+      "tab": "Tab",
+      "tabs": "Tabs",
+      "missing_deps_label": "Eine oder mehrere Abhängigkeiten fehlen",
+      "missing_deps": "Folgende Abhängigkeiten fehlen: {missing}",
+      "password": "Host-Passwort"
     },
     "pt": {
-        "loading": "Carregando hosts SSH...",
-        "connect_to": "Conectar a {host} ({n} aba)",
-        "missing_deps_label": "Uma ou mais dependências ausentes",
-        "missing_deps": "As seguintes dependências estão ausentes: {missing}"
+      "loading": "Carregando hosts SSH...",
+      "connect_to": "Conectar a {host} ({n} {tab})",
+      "tab": "aba",
+      "tabs": "abas",
+      "missing_deps_label": "Uma ou mais dependências ausentes",
+      "missing_deps": "As seguintes dependências estão ausentes: {missing}",
+      "password": "Senha do host"
     },
     "zh": {
-        "loading": "正在加载 SSH 主机...",
-        "connect_to": "连接到 {host}（{n} 个标签页）",
-        "missing_deps_label": "缺少一个或多个依赖项",
-        "missing_deps": "缺少以下依赖项：{missing}"
+      "loading": "正在加载 SSH 主机...",
+      "connect_to": "连接到 {host}（{n} 个{tab}）",
+      "tab": "标签页",
+      "tabs": "标签页",
+      "missing_deps_label": "缺少一个或多个依赖项",
+      "missing_deps": "缺少以下依赖项：{missing}",
+      "password": "主机密码"
     },
     "ru": {
-        "loading": "Загрузка SSH-хостов...",
-        "connect_to": "Подключиться к {host} ({n} вкладка)",
-        "missing_deps_label": "Отсутствует одна или несколько зависимостей",
-        "missing_deps": "Отсутствуют следующие зависимости: {missing}"
+      "loading": "Загрузка SSH-хостов...",
+      "connect_to": "Подключиться к {host} ({n} {tab})",
+      "tab": "вкладка",
+      "tabs": "вкладок",
+      "missing_deps_label": "Отсутствует одна или несколько зависимостей",
+      "missing_deps": "Отсутствуют следующие зависимости: {missing}",
+      "password": "Пароль хоста"
     },
     "pl": {
-        "loading": "Ładowanie hostów SSH...",
-        "connect_to": "Połącz z {host} ({n} karta)",
-        "missing_deps_label": "Brakuje jednej lub więcej zależności",
-        "missing_deps": "Brakuje następujących zależności: {missing}"
+      "loading": "Ładowanie hostów SSH...",
+      "connect_to": "Połącz z {host} ({n} {tab})",
+      "tab": "karta",
+      "tabs": "karty",
+      "missing_deps_label": "Brakuje jednej lub więcej zależności",
+      "missing_deps": "Brakuje następujących zależności: {missing}",
+      "password": "Hasło hosta"
     },
     "uk": {
-        "loading": "Завантаження SSH-хостів...",
-        "connect_to": "Підключення до {host} ({n} вкладка)",
-        "missing_deps_label": "Відсутня одна або кілька залежностей",
-        "missing_deps": "Відсутні наступні залежності: {missing}"
+      "loading": "Завантаження SSH-хостів...",
+      "connect_to": "Підключення до {host} ({n} {tab})",
+      "tab": "вкладка",
+      "tabs": "вкладок",
+      "missing_deps_label": "Відсутня одна або кілька залежностей",
+      "missing_deps": "Відсутні наступні залежності: {missing}",
+      "password": "Пароль хоста"
     },
     "ja": {
-        "loading": "SSHホストを読み込んでいます...",
-        "connect_to": "{host} に接続 ({n} タブ)",
-        "missing_deps_label": "1つ以上の依存関係が見つかりません",
-        "missing_deps": "次の依存関係が見つかりません: {missing}"
+      "loading": "SSHホストを読み込んでいます...",
+      "connect_to": "{host} に接続 ({n} {tab})",
+      "tab": "タブ",
+      "tabs": "タブ",
+      "missing_deps_label": "1つ以上の依存関係が見つかりません",
+      "missing_deps": "次の依存関係が見つかりません: {missing}",
+      "password": "ホストのパスワード"
     },
     "hi": {
-        "loading": "SSH होस्ट लोड हो रहे हैं...",
-        "connect_to": "{host} से कनेक्ट करें ({n} टैब)",
-        "missing_deps_label": "एक या अधिक निर्भरताएँ गायब हैं",
-        "missing_deps": "निम्नलिखित निर्भरताएँ गायब हैं: {missing}"
+      "loading": "SSH होस्ट लोड हो रहे हैं...",
+      "connect_to": "{host} से कनेक्ट करें ({n} {tab})",
+      "tab": "टैब",
+      "tabs": "टैब्स",
+      "missing_deps_label": "एक या अधिक निर्भरताएँ गायब हैं",
+      "missing_deps": "निम्नलिखित निर्भरताएँ गायब हैं: {missing}",
+      "password": "होस्ट पासवर्ड"
     },
     "ar": {
-        "loading": "جارٍ تحميل مضيفي SSH...",
-        "connect_to": "الاتصال بـ {host} ({n} تبويب)",
-        "missing_deps_label": "يوجد نقص في اعتماد واحد أو أكثر",
-        "missing_deps": "الاعتمادات التالية مفقودة: {missing}"
+      "loading": "جارٍ تحميل مضيفي SSH...",
+      "connect_to": "الاتصال بـ {host} ({n} {tab})",
+      "tab": "تبويب",
+      "tabs": "تبويبات",
+      "missing_deps_label": "يوجد نقص في اعتماد واحد أو أكثر",
+      "missing_deps": "الاعتمادات التالية مفقودة: {missing}",
+      "password": "كلمة مرور المضيف"
     }
   }
   return translations.get(language, translations["en"])
@@ -242,7 +281,7 @@ class KeywordQueryEventListener(EventListener):
         items.append(ExtensionResultItem(
           icon=icon,
           name=host_info["host"],          
-          description=extension.translations["connect_to"].format(host=host_info["host"], n=1),
+          description=extension.translations["connect_to"].format(host=host_info["host"], n=1, tab=extension.translations["tab"]),
           on_enter=ExtensionCustomAction({"n": 1, "host": host_info["host"], "has_identity_file": host_info["has_identity_file"]}, keep_app_open=False)
         ))
       return RenderResultListAction(items)
@@ -261,12 +300,17 @@ class KeywordQueryEventListener(EventListener):
     prefix_lower = prefix.lower()
     matches = [{"host": h["host"], "has_identity_file": h["has_identity_file"]} for h in all_hosts if prefix_lower in h["host"].lower()]
     matches.sort(key=lambda h: (not h["host"].lower().startswith(prefix_lower), h["host"]))
+    
+    if n > 1:
+      tab_name = extension.translations["tabs"]
+    else:
+      tab_name = extension.translations["tab"]
 
     if not matches:
       items.append(ExtensionResultItem(
         icon=icon,
         name=prefix,
-        description=extension.translations["connect_to"].format(host=prefix, n=n),
+        description=extension.translations["connect_to"].format(host=prefix, n=n, tab=tab_name),
         on_enter=ExtensionCustomAction({"n": n, "host": prefix}, keep_app_open=False)
       ))
     else:
@@ -274,7 +318,7 @@ class KeywordQueryEventListener(EventListener):
         items.append(ExtensionResultItem(
           icon=icon,
           name=host_info["host"],
-          description=extension.translations["connect_to"].format(host=host_info["host"], n=n),
+          description=extension.translations["connect_to"].format(host=host_info["host"], n=n, tab=tab_name),
           on_enter=ExtensionCustomAction({"n": n, "host": host_info["host"], "has_identity_file": host_info["has_identity_file"]}, keep_app_open=False)
         ))
 
@@ -303,7 +347,7 @@ class ItemEnterListener(EventListener):
         home = expanduser("~")
         zen_env.setdefault("XAUTHORITY", os.path.join(home, ".Xauthority"))
         proc = subprocess.run(
-          ["zenity", "--password", "--title=SSH Password"],
+          ["zenity", "--password", "--title=" + extension.translations["password"]],
           stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, env=zen_env
         )
         if proc.returncode != 0 or not proc.stdout:
