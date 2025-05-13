@@ -1,5 +1,5 @@
 {
-  "required_api_version": "^2.0.0",
+  "required_api_version": "2",
   "name": "SSH Multiplexer for Xfce4 Terminal",
   "description": "Launch SSH sessions in multiple tabs on xfce4-terminal",
   "developer_name": "d4mur",
