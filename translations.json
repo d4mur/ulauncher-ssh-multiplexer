@@ -1,0 +1,106 @@
+{
+  "en": {
+    "loading": "Loading SSH hosts...",
+    "connect_to": "Connect to {host} ({n} {tab_label})",
+    "tab_forms": ["tab", "tabs"],
+    "missing_deps_label": "Missing dependencies",
+    "missing_deps": "Missing: {missing}",
+    "password": "Host password"
+  },
+  "it": {
+    "loading": "Caricamento host SSH...",
+    "connect_to": "Connessione a {host} ({n} {tab_label})",
+    "tab_forms": ["scheda", "schede"],
+    "missing_deps_label": "Mancano dipendenze",
+    "missing_deps": "Mancano: {missing}",
+    "password": "Password dell'host"
+  },
+  "es": {
+    "loading": "Cargando hosts SSH...",
+    "connect_to": "Conectar a {host} ({n} {tab_label})",
+    "tab_forms": ["pestaña", "pestañas"],
+    "missing_deps_label": "Faltan dependencias",
+    "missing_deps": "Faltan: {missing}",
+    "password": "Contraseña del host"
+  },
+  "fr": {
+    "loading": "Chargement des hôtes SSH...",
+    "connect_to": "Connexion à {host} ({n} {tab_label})",
+    "tab_forms": ["onglet", "onglets"],
+    "missing_deps_label": "Dépendances manquantes",
+    "missing_deps": "Manquantes : {missing}",
+    "password": "Mot de passe de l'hôte"
+  },
+  "de": {
+    "loading": "Lade SSH-Hosts...",
+    "connect_to": "Verbinden mit {host} ({n} {tab_label})",
+    "tab_forms": ["Tab", "Tabs"],
+    "missing_deps_label": "Abhängigkeiten fehlen",
+    "missing_deps": "Fehlen: {missing}",
+    "password": "Host-Passwort"
+  },
+  "pt": {
+    "loading": "Carregando hosts SSH...",
+    "connect_to": "Conectar a {host} ({n} {tab_label})",
+    "tab_forms": ["aba", "abas"],
+    "missing_deps_label": "Dependências ausentes",
+    "missing_deps": "Faltam: {missing}",
+    "password": "Senha do host"
+  },
+  "zh": {
+    "loading": "正在加载 SSH 主机...",
+    "connect_to": "连接到 {host} ({n} {tab_label})",
+    "tab_forms": ["标签页"],
+    "missing_deps_label": "缺少依赖项",
+    "missing_deps": "缺少：{missing}",
+    "password": "主机密码"
+  },
+  "ru": {
+    "loading": "Загрузка SSH-хостов...",
+    "connect_to": "Подключиться к {host} ({n} {tab_label})",
+    "tab_forms": ["вкладка", "вкладки", "вкладок"],
+    "missing_deps_label": "Отсутствуют зависимости",
+    "missing_deps": "Отсутствуют: {missing}",
+    "password": "Пароль хоста"
+  },
+  "pl": {
+    "loading": "Ładowanie hostów SSH...",
+    "connect_to": "Połącz z {host} ({n} {tab_label})",
+    "tab_forms": ["karta", "karty", "kart"],
+    "missing_deps_label": "Brakujące zależności",
+    "missing_deps": "Brakuje: {missing}",
+    "password": "Hasło hosta"
+  },
+  "uk": {
+    "loading": "Завантаження SSH-хостів...",
+    "connect_to": "Підключення до {host} ({n} {tab_label})",
+    "tab_forms": ["вкладка", "вкладки", "вкладок"],
+    "missing_deps_label": "Відсутні залежності",
+    "missing_deps": "Відсутні: {missing}",
+    "password": "Пароль хоста"
+  },
+  "ja": {
+    "loading": "SSHホストを読み込んでいます...",
+    "connect_to": "{host} に接続 ({n} {tab_label})",
+    "tab_forms": ["タブ"],
+    "missing_deps_label": "依存関係が見つかりません",
+    "missing_deps": "不足: {missing}",
+    "password": "ホストのパスワード"
+  },
+  "hi": {
+    "loading": "SSH होस्ट लोड हो रहे हैं...",
+    "connect_to": "{host} से कनेक्ट करें ({n} {tab_label})",
+    "tab_forms": ["टैब", "टैब्स"],
+    "missing_deps_label": "निर्भरताएँ गायब हैं",
+    "missing_deps": "गायब: {missing}",
+    "password": "होस्ट पासवर्ड"
+  },
+  "ar": {
+    "loading": "جارٍ تحميل مضيفي SSH...",
+    "connect_to": "الاتصال بـ {host} ({n} {tab_label})",
+    "tab_forms": ["تبويب", "تبويبان", "تبويبات"],
+    "missing_deps_label": "يوجد نقص في الاعتمادات",
+    "missing_deps": "الاعتمادات المفقودة: {missing}",
+    "password": "كلمة مرور المضيف"
+  }
+}
