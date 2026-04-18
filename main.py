@@ -1,9 +1,11 @@
 import os
 import subprocess
-from os.path import expanduser
-import re
+import shutil
+import json
 import locale
-import shutil 
+import shlex
+import glob
+from os.path import expanduser, join, dirname, isfile, isabs, abspath
 
 from ulauncher.api.client.Extension import Extension
 from ulauncher.api.client.EventListener import EventListener
@@ -12,376 +14,192 @@ from ulauncher.api.shared.item.ExtensionResultItem import ExtensionResultItem
 from ulauncher.api.shared.action.RenderResultListAction import RenderResultListAction
 from ulauncher.api.shared.action.ExtensionCustomAction import ExtensionCustomAction
 
-
-SPECIAL_CHARS_PATTERN = re.compile(r"([\[\]\$&`|;<>\"'\\ ])")
-
-
-
-def escape_special_chars(password):
-  """
-  Escape shell-special characters by prefixing them with a backslash.  
-  """
-  return SPECIAL_CHARS_PATTERN.sub(r'\\\1', password)
-
-
-
-def load_translations(language):
-  translations = {
-    "en": {
-      "loading": "Loading SSH hosts...",
-      "connect_to": "Connect to {host} ({n} {tab})",
-      "tab": "tab",
-      "tabs": "tabs",
-      "missing_deps_label": "Missing one or more dependencies",
-      "missing_deps": "The following dependencies are missing: {missing}",
-      "password": "Host password"
-    },
-    "it": {
-      "loading": "Caricamento host SSH...",
-      "connect_to": "Connetti a {host} ({n} {tab})",
-      "tab": "scheda",
-      "tabs": "schede",
-      "missing_deps_label": "Mancano una o più dipendenze",
-      "missing_deps": "Dipendenze mancanti: {missing}",
-      "password": "Password dell'host"
-    },
-    "es": {
-      "loading": "Cargando hosts SSH...",
-      "connect_to": "Conectar a {host} ({n} {tab})",
-      "tab": "pestaña",
-      "tabs": "pestañas",
-      "missing_deps_label": "Falta una o más dependencias",
-      "missing_deps": "Faltan las siguientes dependencias: {missing}",
-      "password": "Contraseña del host"
-    },
-    "fr": {
-      "loading": "Chargement des hôtes SSH...",
-      "connect_to": "Se connecter à {host} ({n} {tab})",
-      "tab": "onglet",
-      "tabs": "onglets",
-      "missing_deps_label": "Une ou plusieurs dépendances manquantes",
-      "missing_deps": "Les dépendances suivantes sont manquantes : {missing}",
-      "password": "Mot de passe de l'hôte"
-    },
-    "de": {
-      "loading": "Lade SSH-Hosts...",
-      "connect_to": "Verbinden mit {host} ({n} {tab})",
-      "tab": "Tab",
-      "tabs": "Tabs",
-      "missing_deps_label": "Eine oder mehrere Abhängigkeiten fehlen",
-      "missing_deps": "Folgende Abhängigkeiten fehlen: {missing}",
-      "password": "Host-Passwort"
-    },
-    "pt": {
-      "loading": "Carregando hosts SSH...",
-      "connect_to": "Conectar a {host} ({n} {tab})",
-      "tab": "aba",
-      "tabs": "abas",
-      "missing_deps_label": "Uma ou mais dependências ausentes",
-      "missing_deps": "As seguintes dependências estão ausentes: {missing}",
-      "password": "Senha do host"
-    },
-    "zh": {
-      "loading": "正在加载 SSH 主机...",
-      "connect_to": "连接到 {host}（{n} 个{tab}）",
-      "tab": "标签页",
-      "tabs": "标签页",
-      "missing_deps_label": "缺少一个或多个依赖项",
-      "missing_deps": "缺少以下依赖项：{missing}",
-      "password": "主机密码"
-    },
-    "ru": {
-      "loading": "Загрузка SSH-хостов...",
-      "connect_to": "Подключиться к {host} ({n} {tab})",
-      "tab": "вкладка",
-      "tabs": "вкладок",
-      "missing_deps_label": "Отсутствует одна или несколько зависимостей",
-      "missing_deps": "Отсутствуют следующие зависимости: {missing}",
-      "password": "Пароль хоста"
-    },
-    "pl": {
-      "loading": "Ładowanie hostów SSH...",
-      "connect_to": "Połącz z {host} ({n} {tab})",
-      "tab": "karta",
-      "tabs": "karty",
-      "missing_deps_label": "Brakuje jednej lub więcej zależności",
-      "missing_deps": "Brakuje następujących zależności: {missing}",
-      "password": "Hasło hosta"
-    },
-    "uk": {
-      "loading": "Завантаження SSH-хостів...",
-      "connect_to": "Підключення до {host} ({n} {tab})",
-      "tab": "вкладка",
-      "tabs": "вкладок",
-      "missing_deps_label": "Відсутня одна або кілька залежностей",
-      "missing_deps": "Відсутні наступні залежності: {missing}",
-      "password": "Пароль хоста"
-    },
-    "ja": {
-      "loading": "SSHホストを読み込んでいます...",
-      "connect_to": "{host} に接続 ({n} {tab})",
-      "tab": "タブ",
-      "tabs": "タブ",
-      "missing_deps_label": "1つ以上の依存関係が見つかりません",
-      "missing_deps": "次の依存関係が見つかりません: {missing}",
-      "password": "ホストのパスワード"
-    },
-    "hi": {
-      "loading": "SSH होस्ट लोड हो रहे हैं...",
-      "connect_to": "{host} से कनेक्ट करें ({n} {tab})",
-      "tab": "टैब",
-      "tabs": "टैब्स",
-      "missing_deps_label": "एक या अधिक निर्भरताएँ गायब हैं",
-      "missing_deps": "निम्नलिखित निर्भरताएँ गायब हैं: {missing}",
-      "password": "होस्ट पासवर्ड"
-    },
-    "ar": {
-      "loading": "جارٍ تحميل مضيفي SSH...",
-      "connect_to": "الاتصال بـ {host} ({n} {tab})",
-      "tab": "تبويب",
-      "tabs": "تبويبات",
-      "missing_deps_label": "يوجد نقص في اعتماد واحد أو أكثر",
-      "missing_deps": "الاعتمادات التالية مفقودة: {missing}",
-      "password": "كلمة مرور المضيف"
-    }
-  }
-  return translations.get(language, translations["en"])
-    
-    
-
 class SshMultiplexExtension(Extension):
-  def __init__(self):
-    super(SshMultiplexExtension, self).__init__()
-    self.subscribe(KeywordQueryEvent, KeywordQueryEventListener())
-    self.subscribe(ItemEnterEvent, ItemEnterListener())
-    self.subscribe(PreferencesEvent, PreferencesListener())
-    self.subscribe(PreferencesUpdateEvent, PreferencesUpdateEventListener())
-    
-    # Default settings
-    self.terminal_command = "xfce4-terminal"
-    self.tab_option = "--tab"
-    self.command_option = "--command"
-    self.max_tabs = "10"
-    self.ssh_command_template = "bash -c 'export SSHPASS={password}; sshpass -e ssh {host}; exec bash'" 
-    self.ssh_command_template_no_pw = "bash -c 'ssh {host}; exec bash'"
-    
-    locale.setlocale(locale.LC_ALL, '')
-    lang = locale.getlocale()[0]
-    self.language = lang.split('_')[0] if lang else 'en'
-    self.translations = load_translations(self.language) 
-    
-    self.missing_deps = []
-    for dep in ["zenity", "sshpass"]:
-      if shutil.which(dep) is None:
-        self.missing_deps.append(dep)
-    
-
-  def parse_ssh_config(self):
-    hosts = []
-    path = expanduser("~/.ssh/config")
-    if os.path.isfile(path):
-      current_host = None
-      
-      with open(path) as f:
-        for line in f:
-          stripped = line.strip()
-          if stripped.lower().startswith("host ") and "*" not in stripped:
-            host = stripped.split()[1]
-            
-            hosts.append({
-              "host": host,
-              "has_identity_file": False
-            })
-          elif stripped.lower().startswith("identityfile"):
-            hosts[-1]["has_identity_file"] = True
-            
-    return sorted(hosts, key=lambda x: x["host"])
-
-
-
-
-class PreferencesUpdateEventListener(EventListener):
-
-  def on_event(self, event, extension):
-    
-    fields = {
-      "terminal_command",
-      "tab_option",
-      "command_option",
-      "ssh_command_template",
-      "ssh_command_template_no_pw"
-    }
-
-    if event.id in fields:
-      setattr(extension, event.id, event.new_value)
-
-    if event.id == "max_tabs":
-      try:
-        extension.max_tabs = int(event.new_value)    
-      except ValueError:
-        extension.max_tabs = 10 
+    def __init__(self):
+        super(SshMultiplexExtension, self).__init__()
+        self.subscribe(KeywordQueryEvent, KeywordQueryEventListener())
+        self.subscribe(ItemEnterEvent, ItemEnterListener())
+        self.subscribe(PreferencesEvent, PreferencesListener())
+        self.subscribe(PreferencesUpdateEvent, PreferencesUpdateEventListener())
         
-    elif event.id == "language":
-      extension.language = event.new_value
-      if extension.language:
-        extension.translations = load_translations(extension.language)
-      else:
-        lang = locale.getlocale()[0]
-        extension.language = lang.split('_')[0] if lang else 'en'
-        extension.translations = load_translations(extension.language)
+        self.terminal_command = "xfce4-terminal"
+        self.tab_option = "--tab"
+        self.command_option = "--command"
+        self.max_tabs = 10
+        self.ssh_command_template = ""
+        self.ssh_command_template_no_pw = ""
+        self.language = "en"
+        self.translations = {}
         
+        self._load_translations_file()
+        self.missing_deps = [d for d in ["zenity", "sshpass"] if shutil.which(d) is None]
+
+    def _load_translations_file(self):
+        try:
+            with open(join(dirname(__file__), 'translations.json'), 'r') as f:
+                self.all_translations = json.load(f)
+        except:
+            self.all_translations = {"en": {"tab_forms": ["tab", "tabs"], "connect_to": "Connect to {host} ({n} {tab_label})"}}
+
+    def set_language(self, lang_code=None):
+        if not lang_code:
+            try:
+                lang = locale.getlocale()[0]
+                lang_code = lang.split('_')[0] if lang else 'en'
+            except:
+                lang_code = 'en'
+        self.language = lang_code
+        self.translations = self.all_translations.get(lang_code, self.all_translations.get("en"))
+
+    def get_tab_label(self, n):
+        """Plural logic for various language groups (Slavic, Arabic, French, CJK)"""
+        forms = self.translations.get("tab_forms", ["tab", "tabs"])
+        num_forms = len(forms)
+        if num_forms == 1: return forms[0]
+
+        # Arabic (Dual and Plural forms for technical tools)
+        if self.language == 'ar' and num_forms >= 3:
+            if n == 1: return forms[0]
+            if n == 2: return forms[1]
+            return forms[2] # Plural for 0 and 3-10+
+
+        # Slavic languages (RU, UK, PL)
+        if self.language in ['ru', 'uk', 'pl'] and num_forms >= 3:
+            if self.language == 'pl':
+                if n == 1: return forms[0]
+                if 2 <= n % 10 <= 4 and (n % 100 < 10 or n % 100 >= 20): return forms[1]
+                return forms[2]
+            else: # RU, UK
+                if n % 10 == 1 and n % 100 != 11: return forms[0]
+                if 2 <= n % 10 <= 4 and (n % 100 < 10 or n % 100 >= 20): return forms[1]
+                return forms[2]
         
+        # French and Portuguese (0 is singular)
+        if self.language in ['fr', 'pt-br']:
+            return forms[0] if n < 2 else forms[1]
         
+        # Default (EN, IT, etc. where 0 is plural "0 tabs")
+        return forms[0] if n == 1 else forms[1]
+
+    def update_preference(self, pref_id, value):
+        if pref_id == "max_tabs":
+            try: self.max_tabs = int(value)
+            except: self.max_tabs = 10
+        elif pref_id == "language":
+            self.set_language(value)
+        elif pref_id == "ssh_command_template":
+            old_insecure = "bash -c 'export SSHPASS={password}; sshpass -e ssh {host}; exec bash'"
+            new_secure = "bash -c 'sshpass -e ssh {host}; exec bash'"
+            self.ssh_command_template = new_secure if value.strip() == old_insecure else value
+        elif pref_id == "ssh_command_template_no_pw":
+            self.ssh_command_template_no_pw = value
+        else:
+            setattr(self, pref_id, value)
+
+    def parse_ssh_config(self, config_path=None, visited=None):
+        if config_path is None: config_path = expanduser("~/.ssh/config")
+        if visited is None: visited = set()
+        config_path = abspath(config_path)
+        if config_path in visited or not isfile(config_path): return []
+        visited.add(config_path)
+        hosts = []
+        ssh_dir = expanduser("~/.ssh/")
+        try:
+            with open(config_path) as f:
+                for line in f:
+                    s = line.strip()
+                    if not s or s.startswith('#'): continue
+                    l = s.lower()
+                    if l.startswith("include "):
+                        include_pattern = s.split(None, 1)[1]
+                        full_pattern = expanduser(include_pattern)
+                        if not isabs(full_pattern): full_pattern = join(ssh_dir, include_pattern)
+                        for matched_file in glob.glob(full_pattern):
+                            hosts.extend(self.parse_ssh_config(matched_file, visited))
+                    elif l.startswith("host ") and "*" not in l:
+                        try:
+                            host_name = s.split()[1]
+                            hosts.append({"host": host_name, "has_id": False})
+                        except: continue
+                    elif l.startswith("identityfile") and hosts:
+                        hosts[-1]["has_id"] = True
+        except: pass
+        if config_path == abspath(expanduser("~/.ssh/config")):
+            return sorted(hosts, key=lambda x: x["host"])
+        return hosts
 
 class PreferencesListener(EventListener):
-  def on_event(self, event, extension):
+    def on_event(self, event, extension):
+        for k, v in event.preferences.items():
+            extension.update_preference(k, v)
 
-    extension.terminal_command = event.preferences.get("terminal_command", extension.terminal_command)
-    extension.tab_option = event.preferences.get("tab_option", extension.tab_option)
-    extension.command_option = event.preferences.get("command_option", extension.command_option)
-    
-    try:
-      extension.max_tabs = int(event.preferences.get("max_tabs", extension.max_tabs))    
-    except ValueError:
-      extension.max_tabs = 10 
-    
-    extension.ssh_command_template = event.preferences.get("ssh_command_template", extension.ssh_command_template)
-    extension.ssh_command_template_no_pw = event.preferences.get("ssh_command_template_no_pw", extension.ssh_command_template_no_pw)
-    extension.language = event.preferences.get("language", extension.language)
+class PreferencesUpdateEventListener(EventListener):
+    def on_event(self, event, extension):
+        extension.update_preference(event.id, event.new_value)
 
-    if extension.language:
-      extension.translations = load_translations(extension.language)
-    else:
-      lang = locale.getlocale()[0]
-      extension.language = lang.split('_')[0] if lang else 'en'
-      extension.translations = load_translations(extension.language)
-    
-            
 class KeywordQueryEventListener(EventListener):
-  def on_event(self, event, extension):
-    query = event.get_argument() or ""
-    parts = query.split()
-    icon = "images/icon.svg"
-    items = []
-    
-    
-    if len(extension.missing_deps) > 0:
-      items.append(ExtensionResultItem(
-          icon=icon,
-          name=extension.translations["missing_deps_label"],          
-          description=extension.translations["missing_deps"].format(missing=','.join(extension.missing_deps))          
-        ))
-      return RenderResultListAction(items)
-      
-    
-    all_hosts = extension.parse_ssh_config()
+    def on_event(self, event, extension):
+        query = event.get_argument() or ""
+        parts = query.split()
+        icon = "images/icon.svg"
+        
+        if extension.missing_deps:
+            return RenderResultListAction([ExtensionResultItem(
+                icon=icon, name=extension.translations.get("missing_deps_label", "Error"),
+                description=extension.translations.get("missing_deps", "").format(missing=', '.join(extension.missing_deps))
+            )])
 
-    if not parts:      
-      for host_info in all_hosts:
-        items.append(ExtensionResultItem(
-          icon=icon,
-          name=host_info["host"],          
-          description=extension.translations["connect_to"].format(host=host_info["host"], n=1, tab=extension.translations["tab"]),
-          on_enter=ExtensionCustomAction({"n": 1, "host": host_info["host"], "has_identity_file": host_info["has_identity_file"]}, keep_app_open=False)
-        ))
-      return RenderResultListAction(items)
+        all_hosts = extension.parse_ssh_config()
+        n, prefix = 1, ""
+        if parts:
+            if parts[0].isdigit():
+                n = min(int(parts[0]), extension.max_tabs)
+                prefix = parts[1] if len(parts) > 1 else ""
+            else:
+                prefix = parts[0]
 
-    if parts[0].isdigit():
-      n = int(parts[0])
-      prefix = parts[1] if len(parts) > 1 else ''
-    else:
-      n = 1
-      prefix = parts[0]
-      
-      
-    if n > extension.max_tabs:
-      n = extension.max_tabs
-
-    prefix_lower = prefix.lower()
-    matches = [{"host": h["host"], "has_identity_file": h["has_identity_file"]} for h in all_hosts if prefix_lower in h["host"].lower()]
-    matches.sort(key=lambda h: (not h["host"].lower().startswith(prefix_lower), h["host"]))
-    
-    if n > 1:
-      tab_name = extension.translations["tabs"]
-    else:
-      tab_name = extension.translations["tab"]
-
-    if not matches:
-      items.append(ExtensionResultItem(
-        icon=icon,
-        name=prefix,
-        description=extension.translations["connect_to"].format(host=prefix, n=n, tab=tab_name),
-        on_enter=ExtensionCustomAction({"n": n, "host": prefix}, keep_app_open=False)
-      ))
-    else:
-      for host_info in matches:
-        items.append(ExtensionResultItem(
-          icon=icon,
-          name=host_info["host"],
-          description=extension.translations["connect_to"].format(host=host_info["host"], n=n, tab=tab_name),
-          on_enter=ExtensionCustomAction({"n": n, "host": host_info["host"], "has_identity_file": host_info["has_identity_file"]}, keep_app_open=False)
-        ))
-
-    return RenderResultListAction(items)
+        matches = [h for h in all_hosts if prefix.lower() in h["host"].lower()]
+        if not matches and prefix: matches = [{"host": prefix, "has_id": False}]
+        
+        items = []
+        display = matches if prefix or parts else all_hosts
+        tab_label = extension.get_tab_label(n)
+        
+        for h in display:
+            items.append(ExtensionResultItem(
+                icon=icon, name=h["host"],
+                description=extension.translations["connect_to"].format(host=h["host"], n=n, tab_label=tab_label),
+                on_enter=ExtensionCustomAction({"n": n, "host": h["host"], "has_id": h.get("has_id", False)}, keep_app_open=False)
+            ))
+        return RenderResultListAction(items)
 
 class ItemEnterListener(EventListener):
-  def on_event(self, event, extension):
-    data = event.get_data() or {}
-    n = data.get("n", 1)
-    host = data.get("host")
-    has_identity_file = data.get("has_identity_file")
-    if not host:
-      return
+    def on_event(self, event, extension):
+        data = event.get_data()
+        n, host, has_id = data["n"], data["host"], data["has_id"]
+        env = os.environ.copy()
+        safe_host = shlex.quote(host)
+        
+        if not has_id:
+            zen_env = env.copy()
+            zen_env.setdefault("XAUTHORITY", join(expanduser("~"), ".Xauthority"))
+            proc = subprocess.run(
+                ["zenity", "--password", "--title=" + extension.translations["password"]],
+                stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, env=zen_env
+            )
+            if proc.returncode != 0 or not proc.stdout: return
+            password = proc.stdout.strip()
+            env["SSHPASS"] = password
+            cmd_layout = extension.ssh_command_template.replace("{host}", safe_host).replace("{password}", password)
+        else:
+            cmd_layout = extension.ssh_command_template_no_pw.replace("{host}", safe_host)
 
+        full_cmd = [extension.terminal_command, "--disable-server"]
+        for i in range(n):
+            if i > 0: full_cmd.append(extension.tab_option)
+            full_cmd.extend([f"--title={i+1}-{host}", extension.command_option, cmd_layout])
 
-    if n > extension.max_tabs:
-      n = extension.max_tabs
-    
-    env = os.environ.copy()
-    ssh_cmd_layout = None
-    
-    if has_identity_file != True:
-      try:
-        zen_env = os.environ.copy()
-        #zen_env.setdefault("DISPLAY", ":0")
-        home = expanduser("~")
-        zen_env.setdefault("XAUTHORITY", os.path.join(home, ".Xauthority"))
-        proc = subprocess.run(
-          ["zenity", "--password", "--title=" + extension.translations["password"]],
-          stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, env=zen_env
-        )
-        if proc.returncode != 0 or not proc.stdout:
-          return
-        password = proc.stdout.strip()
-      except Exception:
-        return
-
-      
-      env["SSHPASS"] = password
-      ssh_cmd_layout = extension.ssh_command_template.format(password=escape_special_chars(password), host=host)
-
-    else:
-      ssh_cmd_layout = extension.ssh_command_template_no_pw.format(host=host)      
-
-
-    cmd = [extension.terminal_command, "--disable-server"]
-
-    # Apriamo n tab SSH
-    for i in range(n):
-      #ssh_cmd = extension.ssh_command_template.format(password=password, host=host)
-      ssh_cmd = ssh_cmd_layout
-      
-      if i > 0:
-        cmd += [extension.tab_option]
-      
-      cmd += [        
-        f"--title={i + 1}-{host}",
-        extension.command_option,
-        ssh_cmd
-      ]
-
-    # Eseguiamo il comando per aprire i tab
-    subprocess.Popen(cmd, env=env)
+        subprocess.Popen(full_cmd, env=env)
 
 if __name__ == '__main__':
-  SshMultiplexExtension().run()
+    SshMultiplexExtension().run()
